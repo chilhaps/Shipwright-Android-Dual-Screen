@@ -21,6 +21,7 @@
 #include "soh/Enhancements/game-interactor/GameInteractor.h"
 #include "soh/Enhancements/game-interactor/GameInteractor_Hooks.h"
 #include "soh/Enhancements/randomizer/randomizer_grotto.h"
+#include "soh/Enhancements/DualScreenHUD/DualScreenHUD.h"
 #include "soh/OTRGlobals.h"
 #include "soh/ResourceManagerHelpers.h"
 #include "soh/Enhancements/gameplaystats.h"
@@ -5405,7 +5406,16 @@ void Interface_Draw(PlayState* play) {
                 gSPMatrix(OVERLAY_DISP++, interfaceCtx->view.projectionFlippedPtr,
                           G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
             }
+            // SOH [Port] Dual Screen HUD: the Z-target reticle is tied to the 3D camera view, so unlike
+            // the rest of the HUD it must stay on the main display even while Interface_Draw's other
+            // output is being redirected to the secondary display's offscreen framebuffer.
+            if (DualScreenHUD_IsActive()) {
+                gsSPResetFB(OVERLAY_DISP++);
+            }
             func_8002C124(&play->actorCtx.targetCtx, play); // Draw Z-Target
+            if (DualScreenHUD_IsActive()) {
+                gsSPSetFB(OVERLAY_DISP++, DualScreenHUD_GetFrameBufferId());
+            }
             if (CVarGetInteger(CVAR_ENHANCEMENT("MirroredWorld"), 0)) {
                 gSPMatrix(OVERLAY_DISP++, interfaceCtx->view.projectionPtr,
                           G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
