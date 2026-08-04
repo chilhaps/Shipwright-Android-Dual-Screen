@@ -40,6 +40,17 @@ int32_t DualScreenHUD_GetFrameBufferId(void) {
     return sHudFrameBufferId;
 }
 
+static float sSavedGfxAspectRatio = 0.0f;
+
+void DualScreenHUD_BeginHudPass(void) {
+    sSavedGfxAspectRatio = gfx_current_dimensions.aspect_ratio;
+    gfx_current_dimensions.aspect_ratio = (float)DUAL_SCREEN_HUD_WIDTH / (float)DUAL_SCREEN_HUD_HEIGHT;
+}
+
+void DualScreenHUD_EndHudPass(void) {
+    gfx_current_dimensions.aspect_ratio = sSavedGfxAspectRatio;
+}
+
 #if defined(__ANDROID__)
 
 #include <jni.h>
@@ -253,6 +264,22 @@ void DualScreenHUD_PresentFrame(void) {
     glViewport(0, 0, width, height);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    // Letterbox the fixed 4:3 HUD framebuffer into the (usually differently-shaped) secondary display
+    // surface instead of stretching it, so HUD elements keep their correct proportions.
+    int viewportX = 0, viewportY = 0, viewportWidth = width, viewportHeight = height;
+    if (width > 0 && height > 0) {
+        const float hudAspect = (float)DUAL_SCREEN_HUD_WIDTH / (float)DUAL_SCREEN_HUD_HEIGHT;
+        const float surfaceAspect = (float)width / (float)height;
+        if (surfaceAspect > hudAspect) {
+            viewportWidth = (int)(height * hudAspect);
+            viewportX = (width - viewportWidth) / 2;
+        } else {
+            viewportHeight = (int)(width / hudAspect);
+            viewportY = (height - viewportHeight) / 2;
+        }
+    }
+    glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
 
     glUseProgram(sState.shaderProgram);
     glBindBuffer(GL_ARRAY_BUFFER, sState.vbo);

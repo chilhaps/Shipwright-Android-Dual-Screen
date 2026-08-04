@@ -1353,7 +1353,13 @@ void Play_DrawOverlayElements(PlayState* play) {
             gDPSetCycleType(OVERLAY_DISP++, G_CYC_1CYCLE);
             CLOSE_DISPS(play->state.gfxCtx);
 
+            // HUD element positions are anchor-based off the renderer's current aspect ratio (for
+            // widescreen support), which at this point still reflects the main (often widescreen)
+            // display rather than this fixed 4:3 buffer - override it for the duration of this draw so
+            // elements anchor to this buffer's own corners instead of being spread too wide.
+            DualScreenHUD_BeginHudPass();
             Interface_Draw(play);
+            DualScreenHUD_EndHudPass();
 
             OPEN_DISPS(play->state.gfxCtx);
             gsSPResetFB(OVERLAY_DISP++);

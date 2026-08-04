@@ -23,6 +23,14 @@ int32_t DualScreenHUD_GetFrameBufferId(void);
 // non-Android platforms and when no secondary display is attached.
 void DualScreenHUD_PresentFrame(void);
 
+// Must be called immediately before/after redirecting OVERLAY_DISP into the HUD framebuffer (i.e.
+// around the Interface_Draw call). HUD element positions are computed from the renderer's current
+// aspect ratio so they stay anchored to the true edges of whatever they're drawn into; without this,
+// they'd be positioned for the main (often widescreen) display while actually being drawn into the
+// HUD framebuffer's fixed 4:3 space, spreading them out far wider than that buffer actually is.
+void DualScreenHUD_BeginHudPass(void);
+void DualScreenHUD_EndHudPass(void);
+
 #ifdef __cplusplus
 }
 #endif
