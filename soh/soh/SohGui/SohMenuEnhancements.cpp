@@ -515,6 +515,14 @@ void SohMenu::AddMenuEnhancements() {
         .CVar(CVAR_ENHANCEMENT("MinimalUI"))
         .Options(CheckboxOptions().Tooltip("Hides most of the UI when not needed.\n"
                                            "NOTE: Doesn't activate until scene transition."));
+#ifdef __ANDROID__
+    AddWidget(path, "Dual Screen HUD", WIDGET_CVAR_CHECKBOX)
+        .CVar(CVAR_ENHANCEMENT("DualScreenHUD"))
+        .Options(CheckboxOptions().Tooltip(
+            "On dual-screen Android devices (e.g. Surface Duo), draws the core HUD (hearts, magic, "
+            "rupees, minimap, action buttons) on the secondary screen instead of over the game. Has no "
+            "effect if no secondary display is attached."));
+#endif
     AddWidget(path, "Disable Hot/Underwater Warning Text", WIDGET_CVAR_CHECKBOX)
         .CVar(CVAR_ENHANCEMENT("DisableTunicWarningText"))
         .Options(CheckboxOptions().Tooltip("Disables warning text when you don't have on the Goron/Zora Tunic "

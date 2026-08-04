@@ -14,6 +14,7 @@
 #include <soh/GameVersions.h>
 
 #include "Enhancements/gameconsole.h"
+#include "Enhancements/DualScreenHUD/DualScreenHUD.h"
 #ifdef _WIN32
 #include <Windows.h>
 #else
@@ -1459,6 +1460,9 @@ void RunCommands(Gfx* Commands, const std::vector<std::unordered_map<Mtx*, MtxF>
     ImGui::PushStyleColor(ImGuiCol_TitleBgActive, UIWidgets::ColorValues.at(themeColor));
     for (const auto& m : mtx_replacements) {
         wnd->DrawAndRunGraphicsCommands(Commands, m);
+        // Present the (possibly redirected) HUD framebuffer onto a secondary display, if one is attached
+        // and the Dual Screen HUD enhancement is active. No-op otherwise.
+        DualScreenHUD_PresentFrame();
     }
     ImGui::PopStyleColor();
 }

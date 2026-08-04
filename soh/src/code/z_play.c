@@ -15,6 +15,7 @@
 #include "soh/ResourceManagerHelpers.h"
 #include "soh/SaveManager.h"
 #include "soh/framebuffer_effects.h"
+#include "soh/Enhancements/DualScreenHUD/DualScreenHUD.h"
 
 #include <libultraship/libultraship.h>
 
@@ -1331,7 +1332,35 @@ void Play_DrawOverlayElements(PlayState* play) {
     }
 
     if (gSaveContext.gameMode == GAMEMODE_NORMAL) {
-        Interface_Draw(play);
+        // SOH [Port] Dual Screen HUD: on dual-screen Android devices, redirect the core HUD (hearts,
+        // magic, rupees, minimap, action buttons) into an offscreen framebuffer instead of the main
+        // framebuffer, so it can be presented on the secondary display instead. Single-screen devices
+        // are unaffected (DualScreenHUD_IsActive() is always false for them).
+        if (DualScreenHUD_IsActive()) {
+            s32 hudFrameBuffer = DualScreenHUD_GetFrameBufferId();
+
+            OPEN_DISPS(play->state.gfxCtx);
+            gsSPSetFB(OVERLAY_DISP++, hudFrameBuffer);
+            gDPPipeSync(OVERLAY_DISP++);
+            gDPSetCycleType(OVERLAY_DISP++, G_CYC_FILL);
+            gDPSetRenderMode(OVERLAY_DISP++, G_RM_NOOP, G_RM_NOOP2);
+            gDPSetFillColor(OVERLAY_DISP++, 0);
+            gDPSetScissor(OVERLAY_DISP++, G_SC_NON_INTERLACE, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+            // Clear the HUD framebuffer to transparent black every frame so elements that shrink or
+            // disappear (e.g. digit counters, action icons) don't leave stale pixels behind.
+            gDPFillRectangle(OVERLAY_DISP++, 0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1);
+            gDPPipeSync(OVERLAY_DISP++);
+            gDPSetCycleType(OVERLAY_DISP++, G_CYC_1CYCLE);
+            CLOSE_DISPS(play->state.gfxCtx);
+
+            Interface_Draw(play);
+
+            OPEN_DISPS(play->state.gfxCtx);
+            gsSPResetFB(OVERLAY_DISP++);
+            CLOSE_DISPS(play->state.gfxCtx);
+        } else {
+            Interface_Draw(play);
+        }
     }
 
     Message_Draw(play);

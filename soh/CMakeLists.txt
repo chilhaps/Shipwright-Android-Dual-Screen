@@ -711,11 +711,18 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "NintendoSwitch")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
     set(THREADS_PREFER_PTHREAD_FLAG ON)
     find_package(Threads REQUIRED)
+    # Needed by soh/Enhancements/DualScreenHUD to present the HUD framebuffer on a secondary display's Surface.
+    find_library(ANDROID_LIBRARY android)
+    find_library(EGL_LIBRARY EGL)
+    find_library(GLESV2_LIBRARY GLESv2)
     set(ADDITIONAL_LIBRARY_DEPENDENCIES
         "libultraship;"
         "ZAPDLib;"
         SDL2::SDL2
         Threads::Threads
+        ${ANDROID_LIBRARY}
+        ${EGL_LIBRARY}
+        ${GLESV2_LIBRARY}
     )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "CafeOS")
     find_package(SDL2 REQUIRED)

@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat;
 import android.os.Build;
 import android.view.WindowManager;
 import android.widget.Toast;
+import android.view.Surface;
 
 import android.util.Log;
 
@@ -42,6 +43,7 @@ public class MainActivity extends SDLActivity{
 
     SharedPreferences preferences;
     private static final CountDownLatch setupLatch = new CountDownLatch(1);
+    private DualScreenManager dualScreenManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,18 @@ public class MainActivity extends SDLActivity{
 
         setupControllerOverlay();
         attachController();
+
+        dualScreenManager = new DualScreenManager(this);
+        dualScreenManager.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (dualScreenManager != null) {
+            dualScreenManager.stop();
+            dualScreenManager = null;
+        }
+        super.onDestroy();
     }
 
     public static void waitForSetupFromNative() {
@@ -357,6 +371,12 @@ public class MainActivity extends SDLActivity{
 
     // Native method for setting joystick axis value
     public native void setAxis(int axis, short value);
+
+    // Native methods for the Dual Screen HUD feature: notify native code when the secondary display's
+    // Surface (hosted by DualScreenHudPresentation) becomes available/unavailable, so the core HUD can
+    // be redirected onto it. See soh/soh/Enhancements/DualScreenHUD/DualScreenHUD.cpp.
+    public native void nativeSecondaryDisplaySurfaceChanged(Surface surface, int width, int height);
+    public native void nativeSecondaryDisplaySurfaceDestroyed();
 
     private Button button1, button2, button3, button4;
     private Button buttonA, buttonB, buttonX, buttonY;
