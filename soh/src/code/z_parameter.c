@@ -5423,7 +5423,15 @@ void Interface_Draw(PlayState* play) {
 
             // Render enemy health bar after Z-target to leverage set variables
             if (CVarGetInteger(CVAR_ENHANCEMENT("EnemyHealthBar"), 0)) {
+                // SOH [Port] Dual Screen HUD: like the Z-target reticle above, the health bar is tied to
+                // the 3D camera view of an in-world actor, so it must stay on the main display.
+                if (DualScreenHUD_IsActive()) {
+                    gsSPResetFB(OVERLAY_DISP++);
+                }
                 Interface_DrawEnemyHealthBar(&play->actorCtx.targetCtx, play);
+                if (DualScreenHUD_IsActive()) {
+                    gsSPSetFB(OVERLAY_DISP++, DualScreenHUD_GetFrameBufferId());
+                }
             }
         }
 
