@@ -6,13 +6,13 @@ Original Repository: [HarbourMasters/Shipwright](https://github.com/HarbourMaste
 
 Supported (probably): Android 7.0+ (OpenGL ES 3.0+ required)
 
-Tested On: Android 15
+Tested On: Android 13 (on AYN Thor)
 
 ## Installation
 
 Installation instructions:
 
-1. Install the apk [from here](https://github.com/Waterdish/Shipwright-Android/releases).
+1. Install the apk [from here](https://github.com/chilhaps/Shipwright-Android-Dual-Screen/releases).
 
 2. Open the app and allow all file permissions. It will ask to set up files. Let it do its thing.
 
