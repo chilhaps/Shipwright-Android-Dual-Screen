@@ -1,6 +1,6 @@
-# Ship of Harkinian Android Port
+# Ship of Harkinian Android Port (Dual Screen)
 
-A port of Ship of Harkinian to Android.
+A port of Ship of Harkinian to Android, modified to utilize the secondary display on dual-screen devices.
 
 Original Repository: [HarbourMasters/Shipwright](https://github.com/HarbourMasters/Shipwright)
 
@@ -111,3 +111,7 @@ A: Have your controller plugged in before opening the app. Don't disconnect it m
     - CMake 3.31.5
 
 6. Sync and Build the Project.
+
+## AI Usage Disclosure
+
+This fork was created with assistance from GitHub Copilot.
