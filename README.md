@@ -48,7 +48,7 @@ A: Have your controller plugged in before opening the app. Don't disconnect it m
 
 **Q: How does this fork utilize the secondary display?**
 
-A: At the moment, this fork simply displays the core HUD elements on the secondary display. Make sure "Dual Screen HUD" is enabled under Enhancements->Graphics->UI to hide the HUD on the primary display.
+A: At the moment, this fork simply displays the core HUD elements on the secondary display. To hide the HUD on the primary display, go to **Settings → Enhancements → Graphics → UI** and enable **Dual Screen HUD.**
 
 ## Known Bugs
 
