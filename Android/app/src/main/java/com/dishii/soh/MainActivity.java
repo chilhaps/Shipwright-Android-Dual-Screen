@@ -66,7 +66,24 @@ public class MainActivity extends SDLActivity{
         attachController();
 
         dualScreenManager = new DualScreenManager(this);
-        dualScreenManager.start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (dualScreenManager != null) {
+            dualScreenManager.start();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        // Dismiss the secondary display presentation immediately (e.g. home button press) - it is not
+        // tied to the activity's window and would otherwise keep showing a stale frame in the background.
+        if (dualScreenManager != null) {
+            dualScreenManager.stop();
+        }
+        super.onPause();
     }
 
     @Override
