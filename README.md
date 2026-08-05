@@ -46,6 +46,10 @@ A: Unfortunately the only option for now is to use a different controller. Some 
 
 A: Have your controller plugged in before opening the app. Don't disconnect it mid-game.
 
+**Q: How does this fork utilize the secondary display?**
+
+A: At the moment, this fork simply displays the core HUD elements on the secondary display. Make sure "Dual Screen HUD" is enabled under Enhancements->Graphics->UI to hide the HUD on the primary display.
+
 ## Known Bugs
 
 - If a controller is reconnected, it will not open the Enhancements Menu.
